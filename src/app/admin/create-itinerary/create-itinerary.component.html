@@ -1,0 +1,184 @@
+<mat-card>
+    <mat-card-title class="pl-2 pb-3">
+        Create Itinerary
+    </mat-card-title>
+    <mat-card-content>
+        <form [formGroup]="frmCreateItinerary" (ngSubmit)="createItinerary()">
+            <div class="container-fluid px-0">
+                <div class="row">
+                    <div class="col-6">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Category</mat-label>
+                            <mat-select formControlName="domIntr" (selectionChange)="getPkgsByDomInt($event)">
+                                <mat-option>None</mat-option>
+                                <mat-option *ngFor="let reg of domInt" [value]="reg">
+                                    {{ reg.catname }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['domIntr'].errors" class="small text-danger mb-3">
+                            <mat-error *ngIf="f['domIntr'].errors['required']">Mandatory</mat-error>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field appearance="fill">
+                            <mat-label>Packages</mat-label>
+                            <mat-select formControlName="items">
+                                <mat-option>None</mat-option>
+                                <mat-option *ngFor="let pkg of packages" [value]="pkg">
+                                    {{ pkg.SubCatName }}
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['items'].errors" class="small text-danger mb-3">
+                            <mat-error *ngIf="f['items'].errors['required']">Mandatory</mat-error>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <mat-form-field appearance="standard">
+                            <mat-label>Itinerary Name</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="itineraryName" #nameInput>
+                        </mat-form-field>
+                        <div *ngIf="submitted && f['itineraryName'].errors" class="text-danger">
+                            <mat-error *ngIf="f['itineraryName'].errors['required']">Itinerary Name is required</mat-error>
+                            <mat-error *ngIf="f['itineraryName'].errors['minlength']">Cannot be less than 4 characters</mat-error>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        
+                        <mat-label>Itinerary Short Description</mat-label>
+                        <tinymce matInput formControlName="itineraryShortDesc" [config]="tinyMceConfig"></tinymce>
+                        <!-- <mat-form-field appearance="standard">
+                            <mat-label>Itinerary Short Description</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="itineraryShortDesc" #nameInput>
+                            <div *ngIf="submitted && f['itineraryShortDesc'].errors" class="text-danger">
+                                <mat-error *ngIf="f['itineraryShortDesc'].errors['maxlength']">Cannot enter more than 150 characters</mat-error>
+                            </div>
+                        </mat-form-field> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <button mat-raised-button color="primary"type="button" (click)="uploadMultipleFiles()">Upload Multiple Images</button>
+                        <div class="border p-2 mt-1" *ngIf="imgResultMultiple.length > 0">
+                            <div class="row">
+                                <div class="col-2" *ngFor="let result of imgResultMultiple;let imId = index;">
+                                    <img class="border" [src]="result.image" width="250px" height="150px" alt="" />
+                                    <div (click)="deleteTempItineraryImage(imId)"><svg cIcon name="cilTrash" size="sm" title="Delete"></svg></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <mat-form-field appearance="standard">
+                            <mat-label>Adult Price</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="priceAdult" #nameInput>
+                            <!-- <textarea matInput formControlName="itineraryShortDesc"></textarea> -->
+                            <div *ngIf="submitted && f['priceAdult'].errors" class="text-danger">
+                                <mat-error *ngIf="f['priceAdult'].errors['minlength']">Cannot be less than 2 characters</mat-error>
+                            </div>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-6">
+                        <mat-form-field appearance="standard">
+                            <mat-label>Child Price</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="priceChild" #nameInput>
+                            <!-- <textarea matInput formControlName="itineraryShortDesc"></textarea> -->
+                            <div *ngIf="submitted && f['priceChild'].errors" class="text-danger">
+                                <mat-error *ngIf="f['priceChild'].errors['minlength']">Cannot be less than 2 characters</mat-error>
+                            </div>
+                        </mat-form-field>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <mat-label>Inclusions</mat-label>
+                        <tinymce matInput formControlName="Inclusions" [config]="tinyMceConfig"></tinymce>
+                        <!-- <mat-form-field appearance="standard">
+                            <mat-label>Inclusions</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="Inclusions" #nameInput>
+                            <div *ngIf="submitted && f['Inclusions'].errors" class="text-danger">
+                                <mat-error *ngIf="f['Inclusions'].errors['maxlength']">Cannot enter more than 150 characters</mat-error>
+                            </div>
+                        </mat-form-field> -->
+                    </div>
+                    <div class="col-6">
+                        <mat-label>Exclusions</mat-label>
+                        <tinymce matInput formControlName="Exclusions" [config]="tinyMceConfig"></tinymce>
+                        <!-- <mat-form-field appearance="standard">
+                            <mat-label>Exclusions</mat-label>
+                            <input matInput placeholder="" autocomplete="off" formControlName="Exclusions" #nameInput>
+                            <div *ngIf="submitted && f['Exclusions'].errors" class="text-danger">
+                                <mat-error *ngIf="f['Exclusions'].errors['maxlength']">Cannot enter more than 150 characters</mat-error>
+                            </div>
+                        </mat-form-field> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <mat-label>Things To Note</mat-label>
+                        <tinymce matInput formControlName="thingsToNote" [config]="tinyMceConfig"></tinymce>
+                        <!-- <mat-form-field appearance="standard">
+                            <mat-label>Things To Note</mat-label>
+                            <tinymce matInput formControlName="thingsToNote" [config]="tinyMceConfig"></tinymce>
+                            <input matInput placeholder="" autocomplete="off" formControlName="thingsToNote" #nameInput>
+                            <div *ngIf="submitted && f['thingsToNote'].errors" class="text-danger">
+                                <mat-error *ngIf="f['thingsToNote'].errors['maxlength']">Cannot enter more than 150 characters</mat-error>
+                            </div>
+                        </mat-form-field> -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <div formArrayName="itineraries">
+                            <button type="button" (click)="addItinerary()" mat-raised-button color="secondary" type="button">Add</button>
+                            <div *ngFor="let skill of itineraries.controls; let i=index">
+                                <div [formGroupName]="i" class="border p-2 mt-1">
+                                    <div class="row">
+                                        <div class="col-10">
+                                            <mat-form-field appearance="standard">
+                                                <mat-label>Title</mat-label>
+                                                <input matInput placeholder="" autocomplete="off" formControlName="title">
+                                            </mat-form-field>
+                                        </div>
+                                        <div class="col-2">
+                                            <button (click)="removeItinerary(i)" *ngIf="itineraries.length > 1" mat-raised-button color="secondary" type="button">
+                                                Remove
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <mat-label>Description</mat-label>
+                                            <tinymce matInput formControlName="description" [config]="tinyMceConfig"></tinymce>
+                                            <!-- <mat-form-field appearance="standard">
+                                                <mat-label>Description</mat-label>
+                                                <input matInput placeholder="" autocomplete="off" formControlName="description">
+                                            </mat-form-field> -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <c-alert *ngIf="responseMsg" color="success">Itinerary Created successfully</c-alert>
+                    <c-alert *ngIf="errResp" color="danger">Itinerary creation failed</c-alert>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <button mat-raised-button color="primary" class="mt-3" type="submit">Submit</button>
+                        <button mat-raised-button color="secondary" class="mt-3" type="button" (click)="clearItineraries()">Clear Itineraries</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </mat-card-content>
+</mat-card>

@@ -1,0 +1,152 @@
+<h1 mat-dialog-title>{{ data.Title }}</h1>
+<div mat-dialog-content>
+    <p>{{ data.Description }}</p>
+    <!-- <ul class="list-unstyled">
+      <li *ngFor="let itin of data.itineraries">
+        <p>
+          {{ itin.title }}
+        </p>
+        <p>
+          {{ itin.desc }}
+        </p>
+      </li>
+    </ul> -->
+    <form [formGroup]="frmCreate">
+      <div class="container-fluid px-0">
+          <!-- form array start here -->
+            <!-- <div class="row">
+                <div class="col-6">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Category</mat-label>
+                        <mat-select formControlName="domIntr" (selectionChange)="getPkgsByDomInt($event)">
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let reg of domInt" [value]="reg">
+                                {{ reg.catname }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['domIntr'].errors" class="small text-danger mb-3">
+                        <mat-error *ngIf="f['domIntr'].errors['required']">Mandatory</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Packages</mat-label>
+                        <mat-select formControlName="items">
+                            <mat-option>None</mat-option>
+                            <mat-option *ngFor="let pkg of packages" [value]="pkg">
+                                {{ pkg.SubCatName }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['items'].errors" class="small text-danger mb-3">
+                        <mat-error *ngIf="f['items'].errors['required']">Mandatory</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field appearance="standard">
+                        <mat-label>Itinerary Name</mat-label>
+                        <input matInput placeholder="" autocomplete="off" formControlName="itineraryName" #nameInput>
+                    </mat-form-field>
+                    <div *ngIf="submitted && f['itineraryName'].errors" class="text-danger">
+                        <mat-error *ngIf="f['itineraryName'].errors['required']">Itinerary Name is required</mat-error>
+                        <mat-error *ngIf="f['itineraryName'].errors['minlength']">Cannot be less than 4 characters</mat-error>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-6">
+                    <mat-form-field appearance="standard">
+                        <mat-label>Itinerary Short Description</mat-label>
+                        <input matInput placeholder="" autocomplete="off" formControlName="itineraryShortDesc" #nameInput>
+                        <!-- <textarea matInput formControlName="itineraryShortDesc"></textarea> ->
+                        <div *ngIf="submitted && f['itineraryShortDesc'].errors" class="text-danger">
+                            <mat-error *ngIf="f['itineraryShortDesc'].errors['maxlength']">Cannot enter more than 150 characters</mat-error>
+                        </div>
+                    </mat-form-field>
+                </div>
+            </div> -->
+          <!-- <div class="row">
+                <div class="col-5">
+                    <mat-form-field appearance="standard">
+                        <mat-label>Adult Price</mat-label>
+                        <input matInput placeholder="" autocomplete="off" formControlName="priceAdult" #nameInput>
+                        <!-- <textarea matInput formControlName="itineraryShortDesc"></textarea> ->
+                        <div *ngIf="submitted && f['priceAdult'].errors" class="text-danger">
+                            <mat-error *ngIf="f['priceAdult'].errors['minlength']">Cannot be less than 2 characters</mat-error>
+                        </div>
+                    </mat-form-field>
+                </div>
+                <div class="col-5">
+                    <mat-form-field appearance="standard">
+                        <mat-label>Child Price</mat-label>
+                        <input matInput placeholder="" autocomplete="off" formControlName="priceChild" #nameInput>
+                        <!-- <textarea matInput formControlName="itineraryShortDesc"></textarea> ->
+                        <div *ngIf="submitted && f['priceChild'].errors" class="text-danger">
+                            <mat-error *ngIf="f['priceChild'].errors['minlength']">Cannot be less than 2 characters</mat-error>
+                        </div>
+                    </mat-form-field>
+                </div>
+            </div> -->
+          <div class="row">
+              <div class="col-12">
+                  <div formArrayName="itineraries">
+                      <button type="button" (click)="addItinerary()" mat-raised-button color="secondary" type="button">Add</button>
+                      <div *ngFor="let skill of itineraries.controls; let i=index">
+                          <div [formGroupName]="i">
+                              <div class="row">
+                                <div class="col-5">
+                                    <mat-form-field appearance="standard">
+                                        <mat-label>Title</mat-label>
+                                        <input matInput placeholder="" autocomplete="off" formControlName="skill">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-5">
+                                    <mat-form-field appearance="standard">
+                                        <mat-label>Description</mat-label>
+                                        <input matInput placeholder="" autocomplete="off" formControlName="exp">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2">
+                                    <button (click)="removeSkill(i)" *ngIf="itineraries.length > 1" mat-raised-button color="secondary" type="button">
+                                        X
+                                    </button>
+                                </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+            
+            <div class="row">
+                <div class="col-6">
+                    <button mat-raised-button color="primary"type="button" (click)="uploadAndResize()">
+                        Browse Files
+                    </button>
+                    <img *ngIf="imgResultAfterResize" [src]="imgResultAfterResize" style="width: 600px;height: 345px;" alt="" />
+                    <c-alert *ngIf="iMsg" color="warning">{{iMsg}}</c-alert>
+                    
+                </div>
+            </div>
+          <div class="row">
+              <div class="col-6">
+                  <mat-checkbox formControlName="active">Active</mat-checkbox>
+              </div>
+          </div>
+          <!-- form array end here -->
+      </div>
+      
+      <c-toast [fade]="true" [visible]="toastSts" color="dark">
+        <c-toast-body> {{ responseMsg }}</c-toast-body>
+      </c-toast>
+  </form>
+</div>
+<div mat-dialog-actions class="mt-3" >
+  <button mat-raised-button color="primary"type="button" (click)="updateItinerary()">Update</button>
+  <button mat-stroked-button mat-dialog-close>Close</button>
+</div>

@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  adminAPIURL: 'https://myferoholidays.com/api'
 };
